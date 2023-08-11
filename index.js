@@ -9,12 +9,10 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+// initialise SDK
+sdk.auth(process.env.INTERCOM_ACCESS_TOKEN);
+
 app.post('/api/tickets', async (req, res) => {
-  console.log(req.body);
-
-  // initialise SDK
-  sdk.auth(process.env.INTERCOM_ACCESS_TOKEN);
-
   // post request to create ticket
   sdk.postTickets({
     ticket_attributes: {_default_title_: req.body.ticket_title, _default_description_: req.body.ticket_body},
@@ -27,23 +25,23 @@ app.post('/api/tickets', async (req, res) => {
 
 
 app.get('/api/tickets', async (req, res) => {
-    // initialise SDK
-    sdk.auth(process.env.INTERCOM_ACCESS_TOKEN);
+  // initialise SDK
+  sdk.auth(process.env.INTERCOM_ACCESS_TOKEN);
   
-    // get ticket data
-    sdk.server('https://api.intercom.io');
-    const ticketData = await sdk.getTicketsId({id: '1', 'intercom-version': '2.9'}).
-    then(response => { return response.data })
-    .catch(err => console.error(err));
+  // get ticket data
+  sdk.server('https://api.intercom.io');
+  const ticketData = await sdk.getTicketsId({id: '1', 'intercom-version': '2.9'}).
+  then(response => { return response.data })
+  .catch(err => console.error(err));
 
-    // format ticket data to send to client
-    const ticketDisplay = {'title': ticketData.ticket_attributes._default_title_,
-                           'description': ticketData.ticket_attributes._default_description_,  
-                           'id': ticketData.id}
-    
-    // send ticket data to client
-    res.status(200).json(ticketDisplay)
-  });
+  // format ticket data to send to client
+  const ticketDisplay = {'title': ticketData.ticket_attributes._default_title_,
+                         'description': ticketData.ticket_attributes._default_description_,  
+                         'id': ticketData.id}
+  
+  // send ticket data to client
+  res.status(200).json(ticketDisplay)
+});
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
