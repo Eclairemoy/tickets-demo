@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title> Create an Intercom ticket </title>
+  </head>
+  <body class='container' onload="getTickets()">
+    <h2> Create a ticket </h2>
+    <form action='/api/tickets' method='post'>
+    <label>Choose the type of the ticket you wish to submit:</label><br>
+        <select name="ticket_type" id="ticket_type">
+            <option value="1">Bug</option>
+            <option value="2">Feature</option>
+            <option value="3">Other</option>
+          </select><br>
+      <label>Subject</label><br>
+      <input type="text" name="ticket_title"><br>
+      <label>Description</label><br>
+      <textarea name="ticket_body" rows="6" required></textarea><br>
+      <label>Your email</label><br>
+      <input type="text" name="email" required><br>
+      <button type='submit'>Submit</button>
+    </form>
+
+    <h2> Current Tickets </h2>
+    <p id="existingTicket"></p>
+  <script>
+    async function getTickets() {
+        ticketData = await fetch("/api/tickets")
+        .then(response => { return response.json() })
+        .catch((error) => console.log(error));
+        
+        console.log(ticketData);
+        const ticket = document.getElementById("existingTicket");
+        ticket.innerHTML = "Ticket ID: " + ticketData.id + 
+        "<br> Ticket Title: " + ticketData.title
+        + "<br> Ticket Description: " + ticketData.description;
+    }
+  </script>
+  </body>
+</html>
