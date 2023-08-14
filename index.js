@@ -25,9 +25,6 @@ app.post('/api/tickets', async (req, res) => {
 
 
 app.get('/api/tickets', async (req, res) => {
-  // initialise SDK
-  sdk.auth(process.env.INTERCOM_ACCESS_TOKEN);
-  
   // get ticket data
   sdk.server('https://api.intercom.io');
   const ticketData = await sdk.getTicketsId({id: '1', 'intercom-version': '2.9'}).
